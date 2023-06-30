@@ -18,7 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335, USA
  */
-#include <wolfssl/options.h>
 #include <wolfssl/wolfcrypt/settings.h>
 #include <wolfssl/wolfcrypt/ecc.h>
 #include <wolfssl/wolfcrypt/hash.h>
@@ -33,6 +32,7 @@
 
 #define DEFAULT_PCR_INDEX 16
 
+#ifndef NO_PRESEAL_FILESYSTEM
 static int readFile(char* name, uint8_t* buf, uint32_t* bufSz)
 {
     int ret;
@@ -66,6 +66,7 @@ static int readFile(char* name, uint8_t* buf, uint32_t* bufSz)
 
     return ret;
 }
+#else
 
 static signed char HexCharToByte(signed char ch)
 {
@@ -95,6 +96,7 @@ static int HexToByte(const char *hex, unsigned char *output, unsigned long sz)
     }
     return (int)sz;
 }
+#endif
 
 static void usage()
 {
@@ -140,7 +142,7 @@ int main(int argc, char** argv)
     XMEMSET(&authKey, 0, sizeof(WOLFTPM2_KEY));
     XMEMSET(&pcrReset, 0, sizeof(PCR_Reset_In));
 
-#ifndef NO_FILESYSTEM
+#ifndef NO_PRESEAL_FILESYSTEM
     if (argc < 7) {
         usage();
         return 0;

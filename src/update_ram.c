@@ -60,7 +60,7 @@ void RAMFUNCTION wolfBoot_start(void)
         active = wolfBoot_dualboot_candidate_addr((void**)&source_address);
     #endif
 
-        wolfBoot_printf("Part: Active %d, Address %x\n", active, load_address);
+        wolfBoot_printf("Part: Active %d, Address %x\r\n", active, load_address);
         if (active < 0) { /* panic if no images available */
             wolfBoot_panic();
         }
@@ -87,7 +87,7 @@ void RAMFUNCTION wolfBoot_start(void)
         	break;
         }
 backup_on_failure:
-        wolfBoot_printf("Failure %d: Part %d, Hdr %d, Hash %d, Sig %d\n", ret,
+        wolfBoot_printf("Failure %d: Part %d, Hdr %d, Hash %d, Sig %d\r\n", ret,
                 active, os_image.hdr_ok, os_image.sha_ok, os_image.signature_ok);
         /* panic if authentication fails and no backup */
         if (!wolfBoot_fallback_is_possible())
@@ -101,7 +101,7 @@ backup_on_failure:
         }
     }
 
-    wolfBoot_printf("Firmware Valid\n");
+    wolfBoot_printf("Firmware Valid\r\n");
 	/* First time we boot this update, set to TESTING to await
      * confirmation from the system
      */
@@ -130,7 +130,7 @@ backup_on_failure:
 #ifdef EXT_FLASH
     /* Load image to RAM */
     if (PART_IS_EXT(&os_image)) {
-        wolfBoot_printf("Loading %d bytes to RAM at %08lx\n",
+        wolfBoot_printf("Loading %d bytes to RAM at %08lx\r\n",
                 os_image.fw_size, WOLFBOOT_LOAD_ADDRESS);
 
         ext_flash_check_read((uintptr_t)os_image.fw_base,
@@ -144,14 +144,14 @@ backup_on_failure:
         dts_buf = (uint8_t*)WOLFBOOT_LOAD_DTS_ADDRESS;
         dts_size = (uint32_t)os_image.fw_size;
 
-        wolfBoot_printf("Loading DTS (size %lu) to RAM at %08lx\n",
+        wolfBoot_printf("Loading DTS (size %lu) to RAM at %08lx\r\n",
                 dts_size, dts_buf);
         ext_flash_check_read((uintptr_t)os_image.fw_base,
                 (uint8_t*)dts_buf, dts_size);
     }
   #endif /* MMU */
 #else
-    wolfBoot_printf("Loading %d bytes to RAM at %08lx\n", os_image.fw_size,
+    wolfBoot_printf("Loading %d bytes to RAM at %08lx\r\n", os_image.fw_size,
             (WOLFBOOT_LOAD_ADDRESS));
 
 #ifdef __GNUC__
@@ -174,10 +174,10 @@ backup_on_failure:
     if (dts_buf) {
         ret = wolfBoot_get_dts_size(dts_buf);
         if (ret < 0) {
-            wolfBoot_printf("Failed parsing DTB to load.\n");
+            wolfBoot_printf("Failed parsing DTB to load.\r\n");
         } else {
             dts_size = (uint32_t)ret;
-            wolfBoot_printf("Loading DTB (size %d) to RAM at %08lx\n",
+            wolfBoot_printf("Loading DTB (size %d) to RAM at %08lx\r\n",
                     dts_size, dts_buf);
             memcpy((void*)WOLFBOOT_LOAD_DTS_ADDRESS, dts_buf, dts_size);
         }
@@ -185,7 +185,7 @@ backup_on_failure:
 #endif /* MMU */
 
 #endif /* WOLFBOOT_FIXED_PARTITIONS */
-    wolfBoot_printf("Booting at %08lx\n", WOLFBOOT_LOAD_ADDRESS);
+    wolfBoot_printf("Booting at %08lx\r\n", WOLFBOOT_LOAD_ADDRESS);
     hal_prepare_boot();
 
 #ifdef MMU

@@ -10,8 +10,8 @@ MEMORY
     /* DDR4 - 2GB */
     DRAM (rwx) : ORIGIN = 0x80001000 , LENGTH = 0xBFFFFFFF
 
-    /* OCRAM 256K for startup RAM */
-    OCRAM (rwx) : ORIGIN = 0x18000000, LENGTH = 256K
+    /* OCRAM 128K for startup RAM */
+    OCRAM (rwx) : ORIGIN = 0x18000000, LENGTH = 128K
 }
 
 SECTIONS
@@ -22,7 +22,7 @@ SECTIONS
     PROVIDE (_CORE_NUMBER = 0);
     PROVIDE (_MEMORY_SIZE = LENGTH(OCRAM));
     PROVIDE (_FLASH_SIZE = LENGTH(FLASH));
-    PROVIDE (STACK_SIZE = 64K);
+    PROVIDE (STACK_SIZE = 20K);
 
     .boot :
     {
@@ -31,7 +31,7 @@ SECTIONS
         . = ALIGN(0x800);
         KEEP(*(.vector_table))
         KEEP(*(.boot*))
-    } > FLASH
+    } > OCRAM
 
 
     /* Read-only sections, merged into text segment: */
@@ -63,7 +63,7 @@ SECTIONS
         *(.note.*)
         . = ALIGN(8);
         _end_text = .;
-    } > FLASH
+    } > OCRAM
 
     .rodata :
     {
@@ -72,7 +72,7 @@ SECTIONS
         *(.rodata.*)
         . = ALIGN(8);
         _rodata_end = .;
-    } > FLASH
+    } > OCRAM
 
     PROVIDE(_stored_data = .); 
 
@@ -84,7 +84,7 @@ SECTIONS
         KEEP(*(.ramcode))
         . = ALIGN(8);
         _end_data = .;
-    } > OCRAM AT > FLASH
+    } > OCRAM 
 
     .bss :
     {

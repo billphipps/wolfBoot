@@ -80,7 +80,7 @@ int do_boot(uint32_t* v)
 #else
          "(actually spin loop)"
 #endif
-         "\n", v);
+         "\r\n", v);
     exit(0);
 }
 
@@ -130,13 +130,13 @@ int wolfBoot_start(void)
         goto exit;
     }
 
-    wolfBoot_printf("Firmware Valid\n");
+    wolfBoot_printf("Firmware Valid\r\n");
 
     do_boot((uint32_t*)os_image.fw_base);
 
  exit:
     if (ret < 0) {
-        wolfBoot_printf("Failure %d: Hdr %d, Hash %d, Sig %d\n", ret,
+        wolfBoot_printf("Failure %d: Hdr %d, Hash %d, Sig %d\r\n", ret,
                         os_image.hdr_ok, os_image.sha_ok, os_image.signature_ok);
     }
 
@@ -160,18 +160,18 @@ int main(int argc, const char* argv[])
 
         gImage = (uintptr_t)malloc(sz);
         if (((void*)gImage) == NULL) {
-            wolfBoot_printf("failed to malloc %zu bytes for image\n", sz);
+            wolfBoot_printf("failed to malloc %zu bytes for image\r\n", sz);
             ret = -1;
         }
 
         size_t bread = fread((void*)gImage, 1, sz, img);
         if (bread != sz) {
             ret = -2;
-            wolfBoot_printf("read %zu of %zu bytes from %s\n", bread, sz, argv[1]);
+            wolfBoot_printf("read %zu of %zu bytes from %s\r\n", bread, sz, argv[1]);
         }
         fclose(img);
     } else {
-        wolfBoot_printf("usage: %s image_file.bin\n", argv[0]);
+        wolfBoot_printf("usage: %s image_file.bin\r\n", argv[0]);
         return 255;
     }
 #endif
